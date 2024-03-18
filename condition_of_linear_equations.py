@@ -49,7 +49,7 @@ def condition_number(A):
 # Carmel Dor 316015882
 # Artiom Bondar 332692730
 # Git:https://github.com/IMrMoon/matrix1.git
-# Name: Segev Chen
+# Name: Carmel Dor
 if __name__ == '__main__':
     A = np.array([[-1, -2, 5],
                   [4, -1, 1],

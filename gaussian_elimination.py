@@ -116,8 +116,8 @@ def backward_substitution(mat):
 # Gad Gadi Hasson 207898123
 # Carmel Dor 316015882
 # Artiom Bondar 332692730
-# Git: https://github.com/IMrMoon/matrix1.git
-# Name: Segev Chen
+# Git: https://github.com/Carlechinno/NumericalAnalysisMatrix
+# Name: Carmel Dor
 if __name__ == '__main__':
 
     np.set_printoptions(suppress=True, precision=4)

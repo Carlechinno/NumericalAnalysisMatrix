@@ -110,7 +110,7 @@ def make_diagonal_nonzero(matrix, identity):
 # Carmel Dor 316015882
 # Artiom Bondar 332692730
 # Git:https://github.com/IMrMoon/matrix1.git
-# Name: Segev Chen
+# Name: Carmel Dor
 if __name__ == '__main__':
     np.set_printoptions(suppress=True, precision=4)
     A = np.array([[-1, -2, 5],

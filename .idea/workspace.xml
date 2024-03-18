@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="83ff167c-6c70-4587-8145-a27703fc6cef" name="Changes" comment="Final adjustments, Id added and fix all">
       <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/condition_of_linear_equations.py" beforeDir="false" afterPath="$PROJECT_DIR$/condition_of_linear_equations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gaussian_elimination.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaussian_elimination.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inverse_matrix.py" beforeDir="false" afterPath="$PROJECT_DIR$/inverse_matrix.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,6 +170,10 @@
       <workItem from="1710667665724" duration="3401000" />
       <workItem from="1710683795267" duration="15156000" />
       <workItem from="1710754190251" duration="36000" />
+      <workItem from="1710754626790" duration="15000" />
+      <workItem from="1710755133517" duration="43000" />
+      <workItem from="1710755187796" duration="32000" />
+      <workItem from="1710755228631" duration="12000" />
     </task>
     <task id="LOCAL-00001" summary="First Assignment Completed">
       <option name="closed" value="true" />
