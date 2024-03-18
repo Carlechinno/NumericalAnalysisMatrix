@@ -63,18 +63,26 @@ def find_all_roots(f, a, b, tol=1e-6):
 
     for i in range(len(x) - 1):
         if np.sign(f(x[i])) != np.sign(f(x[i + 1])):
-            root = bisection_method(f, x[i], x[i + 1], tol)
+            root = np.round(bisection_method(f, x[i], x[i + 1], tol),5)
+            np.round(roots)
             roots.append(root)
 
     return roots
 
-
+# Date: 18.3.24
+# Group members:
+# Segev Chen 322433400
+# Gad Gadi Hasson 207898123
+# Carmel Dor 316015882
+# Artiom Bondar 332692730
+# Git: https://github.com/Carlechinno/NumericalAnalysisMatrix
+# Name: Carmel Dor
 if __name__ == '__main__':
-    f = lambda x: x**2 - 4
-
+    np.set_printoptions(suppress=True, precision=4)
+    f = lambda x: (6*x**6-7*x**5) / (2*x**2 + 1)
     # Adjust the interval to avoid the singularity
     a = -2
-    b = 5
+    b = 2
 
     roots = find_all_roots(f, a, b)
     print(bcolors.OKBLUE, f"\nThe equation f(x) has approximate roots at {roots}", bcolors.ENDC)

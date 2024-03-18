@@ -30,9 +30,10 @@ def matrix_inverse(matrix):
 
     counter = 0
     for i in range(n):
+        if matrix[i][i] == 0:
+            make_diagonal_nonzero(matrix, identity)
 
         if matrix[i, i] != 1:
-            # Scale the current row to make the diagonal element 1
             scalar = 1.0 / matrix[i, i]
             counter += 1
             elementary_matrix = scalar_multiplication_elementary_matrix(n, i, scalar)
