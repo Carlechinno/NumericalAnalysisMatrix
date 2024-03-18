@@ -1,0 +1,402 @@
+Index: matrix_utility/__init__.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import numpy as np\n\ndef is_diagonally_dominant(mat):\n    if mat is None:\n        return False\n\n    d = np.diag(np.abs(mat))  # Find diagonal coefficients\n    s = np.sum(np.abs(mat), axis=1) - d  # Find row sum without diagonal\n    return np.all(d > s)\n\n\ndef is_square_matrix(mat):\n    if mat is None:\n        return False\n\n    rows = len(mat)\n    for row in mat:\n        if len(row) != rows:\n            return False\n    return True\n\n\ndef reorder_dominant_diagonal(matrix):\n    n = len(matrix)\n    permutation = np.argsort(np.diag(matrix))[::-1]\n    reordered_matrix = matrix[permutation][:, permutation]\n    return reordered_matrix\n\n\ndef DominantDiagonalFix(matrix):\n    \"\"\"\n    Function to change a matrix to create a dominant diagonal\n    :param matrix: Matrix nxn\n    :return: Change the matrix to a dominant diagonal\n    \"\"\"\n    #Check if we have a dominant for each column\n    dom = [0]*len(matrix)\n    result = list()\n   # Find the largest organ in a row\n    for i in range(len(matrix)):\n        for j in range(len(matrix[0])):\n            if (matrix[i][j] > sum(map(abs,map(int,matrix[i])))-matrix[i][j]) :\n                dom[i]=j\n    for i in range(len(matrix)):\n        result.append([])\n        # Cannot dominant diagonal\n        if i not in dom:\n            print(\"Couldn't find dominant diagonal.\")\n            return matrix\n    # Change the matrix to a dominant diagonal\n    for i,j in enumerate(dom):\n        result[j]=(matrix[i])\n    return result\n\n\ndef swap_rows_elementary_matrix(n, row1, row2):\n    elementary_matrix = np.identity(n)\n    elementary_matrix[[row1, row2]] = elementary_matrix[[row2, row1]]\n\n    return np.array(elementary_matrix)\n\n\ndef matrix_multiply(A, B):\n    if len(A[0]) != len(B):\n        raise ValueError(\"Matrix dimensions are incompatible for multiplication.\")\n\n    result = [[0 for _ in range(len(B[0]))] for _ in range(len(A))]\n\n    for i in range(len(A)):\n        for j in range(len(B[0])):\n            for k in range(len(B)):\n                result[i][j] += A[i][k] * B[k][j]\n\n    return np.array(result)\n\ndef row_addition_elementary_matrix(n, target_row, source_row, scalar=1.0):\n\n    if target_row < 0 or source_row < 0 or target_row >= n or source_row >= n:\n        raise ValueError(\"Invalid row indices.\")\n\n    if target_row == source_row:\n        raise ValueError(\"Source and target rows cannot be the same.\")\n\n    elementary_matrix = np.identity(n)\n    elementary_matrix[target_row, source_row] = scalar\n\n    return np.array(elementary_matrix)\n\n\ndef scalar_multiplication_elementary_matrix(n, row_index, scalar):\n\n    if row_index < 0 or row_index >= n:\n        raise ValueError(\"Invalid row index.\")\n\n    if scalar == 0:\n        raise ValueError(\"Scalar cannot be zero for row multiplication.\")\n\n    elementary_matrix = np.identity(n)\n    elementary_matrix[row_index, row_index] = scalar\n\n    return np.array(elementary_matrix)\n\n# Partial Pivoting: Find the pivot row with the largest absolute value in the current column\ndef partial_pivoting(A,i,N):\n    pivot_row = i\n    v_max = A[pivot_row][i]\n    for j in range(i + 1, N):\n        if abs(A[j][i]) > v_max:\n            v_max = A[j][i]\n            pivot_row = j\n\n    # if a principal diagonal element is zero,it denotes that matrix is singular,\n    # and will lead to a division-by-zero later.\n    if A[i][pivot_row] == 0:\n        return \"Singular Matrix\"\n\n\n    # Swap the current row with the pivot row\n    if pivot_row != i:\n        e_matrix = swap_rows_elementary_matrix(N, i, pivot_row)\n        print(f\"elementary matrix for swap between row {i} to row {pivot_row} :\\n {e_matrix} \\n\")\n        A = np.dot(e_matrix, A)\n        print(f\"The matrix after elementary operation :\\n {A}\")\n        print(\"------------------------------------------------------------------\")
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/matrix_utility/__init__.py b/matrix_utility/__init__.py
+--- a/matrix_utility/__init__.py	(revision fd2ade6b6fbfbdb69fe79db74f0643efa073ddd8)
++++ b/matrix_utility/__init__.py	(date 1708335224193)
+@@ -1,5 +1,6 @@
+ import numpy as np
+ 
++
+ def is_diagonally_dominant(mat):
+     if mat is None:
+         return False
+@@ -33,14 +34,14 @@
+     :param matrix: Matrix nxn
+     :return: Change the matrix to a dominant diagonal
+     """
+-    #Check if we have a dominant for each column
+-    dom = [0]*len(matrix)
++    # Check if we have a dominant for each column
++    dom = [0] * len(matrix)
+     result = list()
+-   # Find the largest organ in a row
++    # Find the largest organ in a row
+     for i in range(len(matrix)):
+         for j in range(len(matrix[0])):
+-            if (matrix[i][j] > sum(map(abs,map(int,matrix[i])))-matrix[i][j]) :
+-                dom[i]=j
++            if (matrix[i][j] > sum(map(abs, map(int, matrix[i]))) - matrix[i][j]):
++                dom[i] = j
+     for i in range(len(matrix)):
+         result.append([])
+         # Cannot dominant diagonal
+@@ -48,8 +49,8 @@
+             print("Couldn't find dominant diagonal.")
+             return matrix
+     # Change the matrix to a dominant diagonal
+-    for i,j in enumerate(dom):
+-        result[j]=(matrix[i])
++    for i, j in enumerate(dom):
++        result[j] = (matrix[i])
+     return result
+ 
+ 
+@@ -73,8 +74,8 @@
+ 
+     return np.array(result)
+ 
++
+ def row_addition_elementary_matrix(n, target_row, source_row, scalar=1.0):
+-
+     if target_row < 0 or source_row < 0 or target_row >= n or source_row >= n:
+         raise ValueError("Invalid row indices.")
+ 
+@@ -88,7 +89,6 @@
+ 
+ 
+ def scalar_multiplication_elementary_matrix(n, row_index, scalar):
+-
+     if row_index < 0 or row_index >= n:
+         raise ValueError("Invalid row index.")
+ 
+@@ -100,8 +100,9 @@
+ 
+     return np.array(elementary_matrix)
+ 
++
+ # Partial Pivoting: Find the pivot row with the largest absolute value in the current column
+-def partial_pivoting(A,i,N):
++def partial_pivoting(A, i, N):
+     pivot_row = i
+     v_max = A[pivot_row][i]
+     for j in range(i + 1, N):
+@@ -114,11 +115,10 @@
+     if A[i][pivot_row] == 0:
+         return "Singular Matrix"
+ 
+-
+     # Swap the current row with the pivot row
+     if pivot_row != i:
+         e_matrix = swap_rows_elementary_matrix(N, i, pivot_row)
+         print(f"elementary matrix for swap between row {i} to row {pivot_row} :\n {e_matrix} \n")
+         A = np.dot(e_matrix, A)
+         print(f"The matrix after elementary operation :\n {A}")
+-        print("------------------------------------------------------------------")
+\ No newline at end of file
++        print("------------------------------------------------------------------")
+Index: gaussian_elimination.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import numpy as np\nfrom numpy.linalg import norm, inv\n\nfrom colors import bcolors\nfrom matrix_utility import scalar_multiplication_elementary_matrix\n\n\ndef make_diagonal_nonzero(matrix):\n    n = len(matrix)\n\n    for k in range(n):\n        if matrix[k, k] == 0:\n            # Find a non-zero element in the same column below the current zero diagonal element\n            for b in range(k + 1, n):\n                if matrix[b, k] != 0:\n                    # Swap rows to make the diagonal element nonzero\n                    matrix[[k, b], :] = matrix[[b, k], :]\n                    # identity[[k, b], :] = identity[[b, k], :]\n\n    return matrix\n\n\ndef gaussianElimination(mat):\n    N = len(mat)\n\n    # if np.linalg.det(mat) == 0:\n    #     pass\n\n# IDK if we need...maybe add check for zero in forward?!!!!check GAD\n    make_diagonal_nonzero(mat)\n\n    singular_flag = forward_substitution(mat)\n\n    if singular_flag != -1:\n\n        if mat[singular_flag][N]:\n            return \"Singular Matrix (Inconsistent System)\"\n        else:\n            return \"Singular Matrix (May have infinitely many solutions)\"\n\n    # if matrix is non-singular: get solution to system using backward substitution\n    return backward_substitution(mat)\n\n\n# function for elementary operation of swapping two rows\ndef swap_row(mat, i, j):\n    N = len(mat)\n    for k in range(N + 1):\n        temp = mat[i][k]\n        mat[i][k] = mat[j][k]\n        mat[j][k] = temp\n\n\ndef forward_substitution(mat):\n    N = len(mat)\n    for k in range(N):\n        # Partial Pivoting: Find the pivot row with the largest absolute value in the current column\n\n        # to make the diagonal to 1 and all the down triangle to zero.\n        scalar = 1.0 / mat[k, k]\n        elementary_matrix = scalar_multiplication_elementary_matrix(N, k, scalar)\n        mat = np.dot(elementary_matrix, mat)\n        pivot_row = k\n        v_max = mat[pivot_row][k]\n        for i in range(k + 1, N):\n            if abs(mat[i][k]) > v_max:\n                v_max = mat[i][k]\n                pivot_row = i\n\n        # if a principal diagonal element is zero,it denotes that matrix is singular,\n        # and will lead to a division-by-zero later.\n        if mat[k][k] == 0:\n            return k  # Matrix is singular\n\n        # Swap the current row with the pivot row\n        if pivot_row != k:\n            swap_row(mat, k, pivot_row)\n        # End Partial Pivoting\n\n        for i in range(k + 1, N):\n\n            #  Compute the multiplier\n            m = mat[i][k] / mat[k][k]\n\n            # subtract fth multiple of corresponding kth row element\n            for j in range(k + 1, N + 1):\n                mat[i][j] -= mat[k][j] * m\n\n            # filling lower triangular matrix with zeros\n            mat[i][k] = 0\n    print(mat)\n\n    return -1\n\n\n# function to calculate the values of the unknowns\ndef backward_substitution(mat):\n    N = len(mat)\n    x = np.zeros(N)  # An array to store solution\n\n    # Start calculating from last equation up to the first\n    for i in range(N - 1, -1, -1):\n\n        x[i] = mat[i][N]\n\n        # Initialize j to i+1 since matrix is upper triangular\n        for j in range(i + 1, N):\n            x[i] -= mat[i][j] * x[j]\n\n        x[i] = (x[i] / mat[i][i])\n    # added!\n    print(\"\\n\", x)\n    return x\n\n# Date: 19.2.24\n# Group members:\n# Segev Chen 322433400\n# Gad Gadi Hasson 207898123\n# Carmel Dor 316015882\n# Artiom Bondar 332692730\n# Git:https://github.com/IMrMoon/matrix1.git\n# Name:\nif __name__ == '__main__':\n\n    A_b = np.array([[6, 5, 7, 9],\n                    [0, 1, 4, 18],\n                    [0, 0, 1, 27]])\n\n\n    result = gaussianElimination(A_b)\n    if isinstance(result, str):\n        print(result)\n    else:\n        print(bcolors.OKBLUE, \"\\nSolution for the system:\")\n        for x in result:\n            print(\"{:.6f}\".format(x))\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/gaussian_elimination.py b/gaussian_elimination.py
+--- a/gaussian_elimination.py	(revision fd2ade6b6fbfbdb69fe79db74f0643efa073ddd8)
++++ b/gaussian_elimination.py	(date 1708344756874)
+@@ -1,6 +1,6 @@
+ import numpy as np
+ from numpy.linalg import norm, inv
+-
++from condition_of_linear_equations import norm
+ from colors import bcolors
+ from matrix_utility import scalar_multiplication_elementary_matrix
+ 
+@@ -23,11 +23,8 @@
+ def gaussianElimination(mat):
+     N = len(mat)
+ 
+-    # if np.linalg.det(mat) == 0:
+-    #     pass
+-
+-# IDK if we need...maybe add check for zero in forward?!!!!check GAD
+-    make_diagonal_nonzero(mat)
++    # IDK if we need...maybe add check for zero in forward?!!!!check GAD
++    #     make_diagonal_nonzero(mat)
+ 
+     singular_flag = forward_substitution(mat)
+ 
+@@ -57,9 +54,9 @@
+         # Partial Pivoting: Find the pivot row with the largest absolute value in the current column
+ 
+         # to make the diagonal to 1 and all the down triangle to zero.
+-        scalar = 1.0 / mat[k, k]
+-        elementary_matrix = scalar_multiplication_elementary_matrix(N, k, scalar)
+-        mat = np.dot(elementary_matrix, mat)
++        # scalar = 1.0 / mat[k, k]
++        # elementary_matrix = scalar_multiplication_elementary_matrix(N, k, scalar)
++        # mat = np.dot(elementary_matrix, mat)
+         pivot_row = k
+         v_max = mat[pivot_row][k]
+         for i in range(k + 1, N):
+@@ -67,9 +64,10 @@
+                 v_max = mat[i][k]
+                 pivot_row = i
+ 
++        # make here the change
+         # if a principal diagonal element is zero,it denotes that matrix is singular,
+         # and will lead to a division-by-zero later.
+-        if mat[k][k] == 0:
++        if not mat[k][pivot_row]:
+             return k  # Matrix is singular
+ 
+         # Swap the current row with the pivot row
+@@ -88,8 +86,7 @@
+ 
+             # filling lower triangular matrix with zeros
+             mat[i][k] = 0
+-    print(mat)
+-
++    # print(mat)
+     return -1
+ 
+ 
+@@ -109,23 +106,24 @@
+ 
+         x[i] = (x[i] / mat[i][i])
+     # added!
+-    print("\n", x)
++    # print("\n", x)
+     return x
+ 
++
+ # Date: 19.2.24
+ # Group members:
+ # Segev Chen 322433400
+ # Gad Gadi Hasson 207898123
+ # Carmel Dor 316015882
+ # Artiom Bondar 332692730
+-# Git:https://github.com/IMrMoon/matrix1.git
+-# Name:
++# Git: https://github.com/IMrMoon/matrix1.git
++# Name: Segev Chen
+ if __name__ == '__main__':
+ 
+-    A_b = np.array([[6, 5, 7, 9],
+-                    [0, 1, 4, 18],
+-                    [0, 0, 1, 27]])
+-
++    np.set_printoptions(suppress=True, precision=4)
++    A_b = [[-1, -2, 5, 2],
++           [4, -1, 1, 4],
++           [1, 6, 2, 9]]
+ 
+     result = gaussianElimination(A_b)
+     if isinstance(result, str):
+@@ -134,3 +132,4 @@
+         print(bcolors.OKBLUE, "\nSolution for the system:")
+         for x in result:
+             print("{:.6f}".format(x))
++    print("the norm of the matrix plus the question number: ", norm(A_b) + 3)
+Index: inverse_matrix.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import math\n\nfrom colors import bcolors\nfrom matrix_utility import row_addition_elementary_matrix, scalar_multiplication_elementary_matrix\nimport numpy as np\n\n\"\"\"\nFunction that find the inverse of non-singular matrix\nThe function performs elementary row operations to transform it into the identity matrix. \nThe resulting identity matrix will be the inverse of the input matrix if it is non-singular.\n If the input matrix is singular (i.e., its diagonal elements become zero during row operations), it raises an error.\n\"\"\"\n\n\ndef matrix_inverse(matrix):\n    print(bcolors.OKBLUE,\n          f\"=================== Finding the inverse of a non-singular matrix using elementary row operations ===================\\n {matrix}\\n\",\n          bcolors.ENDC)\n    if matrix.shape[0] != matrix.shape[1]:\n        raise ValueError(\"Input matrix must be square.\")\n\n    n = matrix.shape[0]\n    identity = np.identity(n)\n\n    # Perform row operations to transform the input matrix into the identity matrix\n\n    if np.linalg.det(matrix) == 0:\n        raise ValueError(\"Matrix is singular, cannot find its inverse.\")\n    make_diagonal_nonzero(matrix, identity)\n\n    counter = 0\n    for i in range(n):\n\n        if matrix[i, i] != 1:\n            # Scale the current row to make the diagonal element 1\n            scalar = 1.0 / matrix[i, i]\n            counter += 1\n            elementary_matrix = scalar_multiplication_elementary_matrix(n, i, scalar)\n            print(f\"elementary matrix to make the diagonal element 1 :\\n {elementary_matrix} \\n\")\n            matrix = np.dot(elementary_matrix, matrix)\n            print(f\"The matrix after elementary operation :\\n {matrix}\")\n            print(bcolors.OKGREEN,\n                  \"------------------------------------------------------------------------------------------------------------------\",\n                  bcolors.ENDC)\n            identity = np.dot(elementary_matrix, identity)\n\n        # Zero out the elements below the diagonal\n        for j in range(i+1, n):\n            if i != j and matrix[j, i] != 0:\n                scalar = -matrix[j, i]\n                counter += 1\n                elementary_matrix = row_addition_elementary_matrix(n, j, i, scalar)\n                print(f\"elementary matrix for R{j + 1} = R{j + 1} + ({scalar}R{i + 1}):\\n {elementary_matrix} \\n\")\n                matrix = np.dot(elementary_matrix, matrix)\n                print(f\"The matrix after elementary operation :\\n {matrix}\")\n                print(bcolors.OKGREEN,\n                    \"------------------------------------------------------------------------------------------------------------------\",\n                    bcolors.ENDC)\n                identity = np.dot(elementary_matrix, identity)\n    #reverse running in the matrix to make the above the diagonal zero\n    for i in range(n - 1, -1, -1):\n        for j in range(i - 1, -1, -1):\n            if i != j:\n                scalar = -matrix[j, i]\n                counter += 1\n                elementary_matrix = row_addition_elementary_matrix(n, j, i, scalar)\n                print(f\"elementary matrix for R{j + 1} = R{j + 1} + ({scalar}R{i + 1}):\\n {elementary_matrix} \\n\")\n                matrix = np.dot(elementary_matrix, matrix)\n                print(f\"The matrix after elementary operation :\\n {matrix}\")\n                print(bcolors.OKGREEN,\n                    \"------------------------------------------------------------------------------------------------------------------\",\n                    bcolors.ENDC)\n                identity = np.dot(elementary_matrix, identity)\n    print(f\"the counter of the elemntary matrix is:\\n {counter}\\n\")\n\n    return identity\n\n\ndef returnAtoNormal(matrix):\n    n = len(matrix)\n\n    for k in range(n):\n        # Find a non-zero element in the same column below the current zero diagonal element\n        for b in range(k + 1, n):\n            if matrix[b, k] == 0:\n                # Swap rows to make the diagonal element nonzero\n                matrix[[k, b], :] = matrix[[b, k], :]\n\n    return matrix\n\n\ndef make_diagonal_nonzero(matrix, identity):\n    n = len(matrix)\n\n    for k in range(n):\n        if matrix[k, k] == 0:\n            # Find a non-zero element in the same column below the current zero diagonal element\n            for b in range(k + 1, n):\n                if matrix[b, k] != 0:\n                    # Swap rows to make the diagonal element nonzero\n                    matrix[[k, b], :] = matrix[[b, k], :]\n                    identity[[k, b], :] = identity[[b, k], :]\n\n    return matrix, identity\n\n# Date: 19.2.24\n# Group members:\n# Segev Chen 322433400\n# Gad Gadi Hasson 207898123\n# Carmel Dor 316015882\n# Artiom Bondar 332692730\n# Git:https://github.com/IMrMoon/matrix1.git\n# Name:\nif __name__ == '__main__':\n    np.set_printoptions(suppress=True, precision=4)\n    A = np.array([[0, 5, 7],\n                  [3, 1, 4],\n                  [0, 3, 1]])\n    A_before = A.copy()\n\n    try:\n        A_inverse = matrix_inverse(A)\n        print(bcolors.OKBLUE, \"\\nInverse of matrix A: \\n\", A_inverse)\n        print(\n            \"=====================================================================================================================\",\n            bcolors.ENDC)\n\n    except ValueError as e:\n        print(str(e))\n    # returnAtoNormal(A)\n    # the results vector\n    B = np.array([9, 18, 27])\n\n    # dot mul the inverse matrix A with the B vector of the results to calculate the X which is the final result vector\n    X = np.dot(A_inverse, B)\n\n    print(X)\n\n\n    # the checking if the inverse is the real inverse of the matrix and return if the values\n    # between these 2 arrays are equal in some lvl return true, else return false or if we have nans return false\n    def checkInverse(inverseMatrix, matrix):\n        # check the size of the matrix\n        n = matrix.shape[0]\n        # creating a dot multiplication between the original matrix to the inverse one\n        product = np.dot(matrix, inverseMatrix)\n        # create an id matrix size n like the matrix\n        identity = np.identity(n)\n        return np.allclose(product, identity)\n\n\n    invA = A_inverse\n    print(\"the result of the check is: \", checkInverse(invA, A_before))\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inverse_matrix.py b/inverse_matrix.py
+--- a/inverse_matrix.py	(revision fd2ade6b6fbfbdb69fe79db74f0643efa073ddd8)
++++ b/inverse_matrix.py	(date 1708347698012)
+@@ -110,12 +110,12 @@
+ # Carmel Dor 316015882
+ # Artiom Bondar 332692730
+ # Git:https://github.com/IMrMoon/matrix1.git
+-# Name:
++# Name: Segev Chen
+ if __name__ == '__main__':
+     np.set_printoptions(suppress=True, precision=4)
+-    A = np.array([[0, 5, 7],
+-                  [3, 1, 4],
+-                  [0, 3, 1]])
++    A = np.array([[-1, -2, 5],
++                  [4, -1, 1],
++                  [1, 6, 2]])
+     A_before = A.copy()
+ 
+     try:
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"Black\">\n    <option name=\"sdkName\" value=\"Python 3.12 (matrix1)\" />\n  </component>\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.12 (matrix1)\" project-jdk-type=\"Python SDK\" />\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision fd2ade6b6fbfbdb69fe79db74f0643efa073ddd8)
++++ b/.idea/misc.xml	(date 1708335224192)
+@@ -3,5 +3,5 @@
+   <component name="Black">
+     <option name="sdkName" value="Python 3.12 (matrix1)" />
+   </component>
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (matrix1)" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
+Index: condition_of_linear_equations.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import numpy as np\nimport inverse_matrix\nfrom colors import bcolors\nimport matrix_utility\n\n\ndef norm(mat):\n    size = len(mat)\n    max_row = 0\n    for row in range(size):\n        sum_row = 0\n        for col in range(size):\n            sum_row += abs(mat[row][col])\n        if sum_row > max_row:\n            max_row = sum_row\n    return max_row\n\n\ndef condition_number(A):\n    # Step 1: Calculate the max norm (infinity norm) of A\n    norm_A = norm(A)\n\n    # Step 2: Calculate the inverse of A\n    A_inv = inverse_matrix.matrix_inverse(A)\n\n    # Step 3: Calculate the max norm of the inverse of A\n    norm_A_inv = norm(A_inv)\n\n    # Step 4: Compute the condition number\n    cond = norm_A * norm_A_inv\n\n    print(bcolors.OKBLUE, \"A:\", bcolors.ENDC)\n    print(A)\n\n    print(bcolors.OKBLUE, \"inverse of A:\", bcolors.ENDC)\n    print(A_inv)\n\n    print(bcolors.OKBLUE, \"Max Norm of A:\", bcolors.ENDC, norm_A, \"\\n\")\n\n    print(bcolors.OKBLUE, \"max norm of the inverse of A:\", bcolors.ENDC, norm_A_inv)\n\n    return cond\n\n# Date: 19.2.24\n# Group members:\n# Segev Chen 322433400\n# Gad Gadi Hasson 207898123\n# Carmel Dor 316015882\n# Artiom Bondar 332692730\n# Git:https://github.com/IMrMoon/matrix1.git\n# Name:\nif __name__ == '__main__':\n    A = np.array([[2, 1.7, -2.5],\n                  [1.24, -2, -0.5],\n                  [3, 0.2, 1]])\n    cond = condition_number(A)\n\n    print(bcolors.OKGREEN, \"\\n condition number: \", cond, bcolors.ENDC)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/condition_of_linear_equations.py b/condition_of_linear_equations.py
+--- a/condition_of_linear_equations.py	(revision fd2ade6b6fbfbdb69fe79db74f0643efa073ddd8)
++++ b/condition_of_linear_equations.py	(date 1709817406729)
+@@ -41,6 +41,7 @@
+ 
+     return cond
+ 
++
+ # Date: 19.2.24
+ # Group members:
+ # Segev Chen 322433400
+@@ -48,11 +49,14 @@
+ # Carmel Dor 316015882
+ # Artiom Bondar 332692730
+ # Git:https://github.com/IMrMoon/matrix1.git
+-# Name:
++# Name: Segev Chen
+ if __name__ == '__main__':
+-    A = np.array([[2, 1.7, -2.5],
+-                  [1.24, -2, -0.5],
+-                  [3, 0.2, 1]])
++    A = np.array([[-1, -2, 5],
++                  [4, -1, 1],
++                  [1, 6, 2]])
+     cond = condition_number(A)
+ 
+-    print(bcolors.OKGREEN, "\n condition number: ", cond, bcolors.ENDC)
+\ No newline at end of file
++    print(bcolors.OKGREEN, "\n condition number: ", cond, bcolors.ENDC)
++
++name = 'segev ya shablul'
++print(bcolors.OKBLUE, name)
+\ No newline at end of file
+Index: .idea/matrix1.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<module type=\"PYTHON_MODULE\" version=\"4\">\n  <component name=\"NewModuleRootManager\">\n    <content url=\"file://$MODULE_DIR$\">\n      <excludeFolder url=\"file://$MODULE_DIR$/.venv\" />\n    </content>\n    <orderEntry type=\"inheritedJdk\" />\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\n  </component>\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/matrix1.iml b/.idea/matrix1.iml
+--- a/.idea/matrix1.iml	(revision fd2ade6b6fbfbdb69fe79db74f0643efa073ddd8)
++++ b/.idea/matrix1.iml	(date 1708335224191)
+@@ -4,7 +4,7 @@
+     <content url="file://$MODULE_DIR$">
+       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+     </content>
+-    <orderEntry type="inheritedJdk" />
++    <orderEntry type="jdk" jdkName="Python 3.9" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+ </module>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"83ff167c-6c70-4587-8145-a27703fc6cef\" name=\"Changes\" comment=\"Final adjustments, Id added and fix all\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Python Script\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Merge.Settings\">\n    <option name=\"BRANCH\" value=\"origin/segev\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\n      <map>\n        <entry key=\"$PROJECT_DIR$\" value=\"segev-backup\" />\n      </map>\n    </option>\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitHubPullRequestSearchHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPEN&quot;,\n    &quot;assignee&quot;: &quot;IMrMoon&quot;\n  }\n}</component>\n  <component name=\"GithubPullRequestsUISettings\">\n    <option name=\"selectedUrlAndAccountId\">\n      <UrlAndAccount>\n        <option name=\"accountId\" value=\"5a9983cd-6d39-42a7-b3d6-64836c1a3b6c\" />\n        <option name=\"url\" value=\"https://github.com/IMrMoon/matrix1.git\" />\n      </UrlAndAccount>\n    </option>\n  </component>\n  <component name=\"HighlightingSettingsPerFile\">\n    <setting file=\"file://$PROJECT_DIR$/inverse_matrix.py\" root0=\"FORCE_HIGHLIGHTING\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 2\n}</component>\n  <component name=\"ProjectId\" id=\"2bgeGVqHLgL3rTsYE3vk26xsF3z\" />\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"Python.condition_of_linear_equations.executor\": \"Run\",\n    \"Python.gaussian_elimination.executor\": \"Run\",\n    \"Python.inverse_matrix.executor\": \"Run\",\n    \"Python.main.executor\": \"Run\",\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"git-widget-placeholder\": \"master\",\n    \"ignore.virus.scanning.warn.message\": \"true\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"settings.editor.selected.configurable\": \"preferences.editor\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"RunManager\" selected=\"Python.inverse_matrix\">\n    <configuration name=\"inverse_matrix\" type=\"PythonConfigurationType\" factoryName=\"Python\" nameIsGenerated=\"true\">\n      <module name=\"matrix1\" />\n      <option name=\"ENV_FILES\" value=\"\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <envs>\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\n      </envs>\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"SDK_NAME\" value=\"Python 3.9 (venv)\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/inverse_matrix.py\" />\n      <option name=\"PARAMETERS\" value=\"\" />\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\n      <option name=\"MODULE_MODE\" value=\"false\" />\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\n      <option name=\"INPUT_FILE\" value=\"\" />\n      <method v=\"2\" />\n    </configuration>\n    <configuration name=\"main\" type=\"PythonConfigurationType\" factoryName=\"Python\" nameIsGenerated=\"true\">\n      <module name=\"matrix1\" />\n      <option name=\"ENV_FILES\" value=\"\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <envs>\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\n      </envs>\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/main.py\" />\n      <option name=\"PARAMETERS\" value=\"\" />\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\n      <option name=\"MODULE_MODE\" value=\"false\" />\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\n      <option name=\"INPUT_FILE\" value=\"\" />\n      <method v=\"2\" />\n    </configuration>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"83ff167c-6c70-4587-8145-a27703fc6cef\" name=\"Changes\" comment=\"\" />\n      <created>1706641053922</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1706641053922</updated>\n      <workItem from=\"1706641060624\" duration=\"7653000\" />\n      <workItem from=\"1706648815043\" duration=\"539000\" />\n      <workItem from=\"1707727389076\" duration=\"231000\" />\n      <workItem from=\"1707727699584\" duration=\"50000\" />\n      <workItem from=\"1707727762330\" duration=\"34000\" />\n      <workItem from=\"1707727830818\" duration=\"9744000\" />\n      <workItem from=\"1707755020934\" duration=\"6229000\" />\n      <workItem from=\"1707774250781\" duration=\"196000\" />\n      <workItem from=\"1707813030533\" duration=\"26000\" />\n      <workItem from=\"1707813282183\" duration=\"1084000\" />\n      <workItem from=\"1707828626621\" duration=\"5500000\" />\n      <workItem from=\"1708006357764\" duration=\"1573000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"First Assignment Completed\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1706648918282</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1706648918282</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"First Assignment Completed\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1706649065032</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1706649065032</updated>\n    </task>\n    <task id=\"LOCAL\u200E-00003\" summary=\"עד מתי אוג 19\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1707728156930</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL\u200E-00003\" />\n      <option name=\"project\" value=\"LOCAL\u200E\" />\n      <updated>1707728156930</updated>\n    </task>\n    <task id=\"LOCAL\u200E-00004\" summary=\"עד מתי אוג 19\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1707741797535</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL\u200E-00004\" />\n      <option name=\"project\" value=\"LOCAL\u200E\" />\n      <updated>1707741797535</updated>\n    </task>\n    <task id=\"LOCAL\u200E-00005\" summary=\"Final adjustments, Id added and fix all\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1707769091099</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL\u200E-00005\" />\n      <option name=\"project\" value=\"LOCAL\u200E\" />\n      <updated>1707769091099</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"6\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State>\n              <option name=\"FILTERS\">\n                <map>\n                  <entry key=\"branch\">\n                    <value>\n                      <list>\n                        <option value=\"master\" />\n                      </list>\n                    </value>\n                  </entry>\n                </map>\n              </option>\n            </State>\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"First Assignment Completed\" />\n    <MESSAGE value=\"עד מתי אוג 19\" />\n    <MESSAGE value=\"Final adjustments, Id added and fix all\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Final adjustments, Id added and fix all\" />\n  </component>\n  <component name=\"XDebuggerManager\">\n    <breakpoint-manager>\n      <breakpoints>\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\n          <url>file://$PROJECT_DIR$/main.py</url>\n          <line>1</line>\n          <option name=\"timeStamp\" value=\"1\" />\n        </line-breakpoint>\n      </breakpoints>\n    </breakpoint-manager>\n  </component>\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\n    <SUITE FILE_PATH=\"coverage/inverse_matrix_py$inverse_matrix.coverage\" NAME=\"inverse_matrix Coverage Results\" MODIFIED=\"1708007730789\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\n    <SUITE FILE_PATH=\"coverage/inverse_matrix_py$gaussian_elimination.coverage\" NAME=\"gaussian_elimination Coverage Results\" MODIFIED=\"1707828642070\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\n    <SUITE FILE_PATH=\"coverage/inverse_matrix_py$condition_of_linear_equations.coverage\" NAME=\"condition_of_linear_equations Coverage Results\" MODIFIED=\"1707768748862\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\n    <SUITE FILE_PATH=\"coverage/matrix1$inverse_matrix.coverage\" NAME=\"inverse_matrix Coverage Results\" MODIFIED=\"1706648608409\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\n    <SUITE FILE_PATH=\"coverage/matrix1$main.coverage\" NAME=\"main Coverage Results\" MODIFIED=\"1706641585269\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision fd2ade6b6fbfbdb69fe79db74f0643efa073ddd8)
++++ b/.idea/workspace.xml	(date 1710683473836)
+@@ -5,7 +5,13 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="83ff167c-6c70-4587-8145-a27703fc6cef" name="Changes" comment="Final adjustments, Id added and fix all">
++      <change beforePath="$PROJECT_DIR$/.idea/matrix1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/matrix1.iml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/condition_of_linear_equations.py" beforeDir="false" afterPath="$PROJECT_DIR$/condition_of_linear_equations.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/gaussian_elimination.py" beforeDir="false" afterPath="$PROJECT_DIR$/gaussian_elimination.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/inverse_matrix.py" beforeDir="false" afterPath="$PROJECT_DIR$/inverse_matrix.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/matrix_utility/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/matrix_utility/__init__.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -58,13 +64,17 @@
+   </component>
+   <component name="PropertiesComponent"><![CDATA[{
+   "keyToString": {
++    "Python.Jacobi.executor": "Run",
++    "Python.__init__.executor": "Run",
++    "Python.bisection_method.executor": "Run",
+     "Python.condition_of_linear_equations.executor": "Run",
++    "Python.gauss_seidel.executor": "Run",
+     "Python.gaussian_elimination.executor": "Run",
+     "Python.inverse_matrix.executor": "Run",
+     "Python.main.executor": "Run",
+     "RunOnceActivity.OpenProjectViewOnStart": "true",
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "git-widget-placeholder": "master",
++    "git-widget-placeholder": "segev",
+     "ignore.virus.scanning.warn.message": "true",
+     "node.js.detected.package.eslint": "true",
+     "node.js.detected.package.tslint": "true",
+@@ -75,7 +85,7 @@
+     "vue.rearranger.settings.migration": "true"
+   }
+ }]]></component>
+-  <component name="RunManager" selected="Python.inverse_matrix">
++  <component name="RunManager">
+     <configuration name="inverse_matrix" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+       <module name="matrix1" />
+       <option name="ENV_FILES" value="" />
+@@ -151,6 +161,11 @@
+       <workItem from="1707813282183" duration="1084000" />
+       <workItem from="1707828626621" duration="5500000" />
+       <workItem from="1708006357764" duration="1573000" />
++      <workItem from="1708255950257" duration="3733000" />
++      <workItem from="1708344100579" duration="2485000" />
++      <workItem from="1708875758068" duration="650000" />
++      <workItem from="1709815462462" duration="1801000" />
++      <workItem from="1710667665724" duration="3401000" />
+     </task>
+     <task id="LOCAL-00001" summary="First Assignment Completed">
+       <option name="closed" value="true" />
+@@ -192,7 +207,15 @@
+       <option name="project" value="LOCAL‎" />
+       <updated>1707769091099</updated>
+     </task>
+-    <option name="localTasksCounter" value="6" />
++    <task id="LOCAL‎-00006" summary="Final adjustments, Id added and fix all">
++      <option name="closed" value="true" />
++      <created>1708008263304</created>
++      <option name="number" value="00006" />
++      <option name="presentableId" value="LOCAL‎-00006" />
++      <option name="project" value="LOCAL‎" />
++      <updated>1708008263304</updated>
++    </task>
++    <option name="localTasksCounter" value="7" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -239,10 +262,17 @@
+     </breakpoint-manager>
+   </component>
+   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+-    <SUITE FILE_PATH="coverage/inverse_matrix_py$inverse_matrix.coverage" NAME="inverse_matrix Coverage Results" MODIFIED="1708007730789" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+-    <SUITE FILE_PATH="coverage/inverse_matrix_py$gaussian_elimination.coverage" NAME="gaussian_elimination Coverage Results" MODIFIED="1707828642070" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/gaussian_elimination_py$condition_of_linear_equations.coverage" NAME="condition_of_linear_equations Coverage Results" MODIFIED="1709817406736" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/inverse_matrix_py$inverse_matrix.coverage" NAME="inverse_matrix Coverage Results" MODIFIED="1708255007308" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/inverse_matrix_py$gaussian_elimination.coverage" NAME="gaussian_elimination Coverage Results" MODIFIED="1708260047421" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+     <SUITE FILE_PATH="coverage/inverse_matrix_py$condition_of_linear_equations.coverage" NAME="condition_of_linear_equations Coverage Results" MODIFIED="1707768748862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/inverse_matrix_py$bisection_method.coverage" NAME="bisection_method Coverage Results" MODIFIED="1710682568574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+     <SUITE FILE_PATH="coverage/matrix1$inverse_matrix.coverage" NAME="inverse_matrix Coverage Results" MODIFIED="1706648608409" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+     <SUITE FILE_PATH="coverage/matrix1$main.coverage" NAME="main Coverage Results" MODIFIED="1706641585269" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/inverse_matrix_py$gauss_seidel.coverage" NAME="gauss_seidel Coverage Results" MODIFIED="1710680319805" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/inverse_matrix_py$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1708010651649" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/matrix_utility" />
++    <SUITE FILE_PATH="coverage/gaussian_elimination_py$gaussian_elimination.coverage" NAME="gaussian_elimination Coverage Results" MODIFIED="1708344855132" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/gaussian_elimination_py$inverse_matrix.coverage" NAME="inverse_matrix Coverage Results" MODIFIED="1709817335854" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/inverse_matrix_py$Jacobi.coverage" NAME="Jacobi Coverage Results" MODIFIED="1710680304967" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+   </component>
+ </project>
+\ No newline at end of file
